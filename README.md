@@ -1,3 +1,5 @@
+This fork is merely for fixing the outstanding user32 uintptr issue. If the proper repo accepts the pull request already in place for the fix, this repo will probably be removed.
+
 About w32
 ==========
 
