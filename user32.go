@@ -117,6 +117,7 @@ var (
 	procFindWindowW                   = moduser32.NewProc("FindWindowW")
 	procFindWindowExW                 = moduser32.NewProc("FindWindowExW")
 	procGetClassName                  = moduser32.NewProc("GetClassNameW")
+	procEnumWindows                   = moduser32.NewProc("EnumWindows")
 	procEnumChildWindows              = moduser32.NewProc("EnumChildWindows")
 	procSetTimer                      = moduser32.NewProc("SetTimer")
 	procKillTimer                     = moduser32.NewProc("KillTimer")
@@ -214,6 +215,15 @@ func FindWindowW(className, windowName *uint16) HWND {
 		uintptr(unsafe.Pointer(windowName)))
 
 	return HWND(ret)
+}
+
+func EnumWindows(lpEnumFunc WNDENUMPROC, lParam LPARAM) bool {
+	ret, _, _ := procEnumWindows.Call(
+		uintptr(syscall.NewCallback(lpEnumFunc)),
+		uintptr(lParam),
+	)
+
+	return ret != 0
 }
 
 func EnumChildWindows(hWndParent HWND, lpEnumFunc WNDENUMPROC, lParam LPARAM) bool {
