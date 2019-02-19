@@ -49,6 +49,7 @@ var (
 	procReadProcessMemory          = modkernel32.NewProc("ReadProcessMemory")
 	procQueryPerformanceCounter    = modkernel32.NewProc("QueryPerformanceCounter")
 	procQueryPerformanceFrequency  = modkernel32.NewProc("QueryPerformanceFrequency")
+	procQueryFullProcessImageName  = modkernel32.NewProc("QueryFullProcessImageNameW")
 )
 
 func GetModuleHandle(modulename string) HINSTANCE {
@@ -385,4 +386,23 @@ func QueryPerformanceFrequency() uint64 {
 	)
 
 	return result
+}
+
+func QueryFullProcessImageName(hprocess HANDLE) string {
+	flags := 0
+	length := MAX_PATH
+	buf := make([]uint16, length)
+
+	ret, _, _ := procQueryFullProcessImageName.Call(
+		uintptr(hprocess),
+		uintptr(flags),
+		uintptr(unsafe.Pointer(&buf[0])),
+		uintptr(unsafe.Pointer(&length)),
+	)
+
+	if ret == 0 {
+		return ""
+	}
+
+	return syscall.UTF16ToString(buf)
 }
