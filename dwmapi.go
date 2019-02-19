@@ -120,7 +120,10 @@ func DwmGetWindowAttribute(hWnd HWND, dwAttribute uint32) (pAttribute interface{
 		pvAttribute = uintptr(unsafe.Pointer(v))
 		pvAttrSize = unsafe.Sizeof(*v)
 	case DWMWA_CLOAKED:
-		panic(fmt.Sprintf("DwmGetWindowAttribute(%d) is not currently supported.", dwAttribute))
+		v := new(DWORD)
+		pAttribute = v
+		pvAttribute = uintptr(unsafe.Pointer(v))
+		pvAttrSize = unsafe.Sizeof(*v)
 	default:
 		panic(fmt.Sprintf("DwmGetWindowAttribute(%d) is not valid.", dwAttribute))
 	}
