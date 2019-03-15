@@ -102,6 +102,7 @@ var (
 	procSetCursor                     = moduser32.NewProc("SetCursor")
 	procCreateIcon                    = moduser32.NewProc("CreateIcon")
 	procDestroyIcon                   = moduser32.NewProc("DestroyIcon")
+	procWindowFromPoint               = moduser32.NewProc("WindowFromPoint")
 	procMonitorFromPoint              = moduser32.NewProc("MonitorFromPoint")
 	procMonitorFromRect               = moduser32.NewProc("MonitorFromRect")
 	procMonitorFromWindow             = moduser32.NewProc("MonitorFromWindow")
@@ -930,6 +931,15 @@ func DestroyIcon(icon HICON) bool {
 		uintptr(icon),
 	)
 	return ret != 0
+}
+
+// Broken, only seems to send x, and y is always treated as 0
+func WindowFromPoint(x, y int) HWND {
+	ret, _, _ := procWindowFromPoint.Call(
+		uintptr(x),
+		uintptr(y),
+	)
+	return HWND(ret)
 }
 
 func MonitorFromPoint(x, y int, dwFlags uint32) HMONITOR {
